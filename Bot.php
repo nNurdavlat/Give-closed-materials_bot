@@ -18,8 +18,8 @@ class Bot
     }
 
 
-    public function saveUser(string $language)
+    public function saveUser(string $language): true
     {
-        $query =
+        return true;
     }
 }

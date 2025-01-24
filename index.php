@@ -42,7 +42,7 @@ if ($txt == '/start') {
 }
 
 if($txt=='UZB 🇺🇿'){
-
+    return true;
 }elseif ($txt == 'РУС 🇷🇺'){
     $bot->makeRequest('sendMessage', [
         'chat_id' => $cid,
