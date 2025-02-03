@@ -6,7 +6,7 @@ class DB
 
     public $user = "root";
     public $pass = "1234";
-    public $db_name = "telegram_users";
+    public $db_name = "closed_materials";
     public $conn;
 
     public function __construct()
