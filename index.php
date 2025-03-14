@@ -19,18 +19,14 @@ $messageId = $update->message->message_id; // User yuborgan xabarni ID si
 $name = $message->chat->first_name;
 $user_name = $message->chat->username;
 
-
 // INLINE KAYBOARD LARNI USHLAB OLISH
 if (isset($update->callback_query)) {
     $callbackQuery = $update->callback_query; // Update ichida Callback query ni ushlab olib Callback queryni ishlatamiz
     $callbackText = $callbackQuery->data; // Tugma bosilgandagi so'z. Tugmani so'zi
     $callbackChatId = $callbackQuery->message->chat->id; // Foiydalanuvchini ID si callbackdagi
     $callMid = $callbackQuery->message->message_id; // Xabarni ID sini ushlab olish USERNIKI
-
 }
 
-
-//BUTTONS MENYU_MARKAP
 $languages = json_encode([
     'resize_keyboard' => true,
     'keyboard' => [
@@ -39,7 +35,6 @@ $languages = json_encode([
 ]);
 
 
-// FOR USERS
 if ($txt == "/start") {
     $bot->makeRequest('sendMessage', [
         'chat_id' => $cid,
@@ -50,45 +45,31 @@ if ($txt == "/start") {
 }
 
 if ($txt == 'UZB 🇺🇿') {
-    $bot->saveUser($cid, 30);  // Discount tabledan olib kelinadi
-    $bot->makeRequest('sendVideo', [
-        'chat_id' => $cid,
-        'video' => "https://t.me/nurdavlatBlog/107",
-        'caption' => "10 daqiqalik tekin darslik vd keldi uzb tilida"
-    ]);
+    $user = $bot->getUserInfo($cid);
+    if ($user) {
+        $bot->makeRequest('sendMessage', [
+            'chat_id' => $cid,
+            'text' => "Siz avval qo'shilgansiz. Nima savoliz bor"
+        ]);
+    }else{
+        $bot->saveUser($cid, 30);  // Discount tabledan olib kelinadi
+        $bot->makeRequest('sendVideo', [
+            'chat_id' => $cid,
+            'video' => "https://t.me/nurdavlatBlog/107",
+            'caption' => "10 daqiqalik tekin darslik vd keldi uzb tilida"
+        ]);
 
-    $bot->makeRequest('sendMessage', [
-        'chat_id' => $cid,
-        'text' => "Videodan keyin yopiq kanal haqida reklama va takliflar yozilgan xabar jo‘natiladi. Xabar ichida obuna narxi bir oyga ekanligi haqida ma’lumot yoziladi.",
-        'reply_markup' => json_encode([
-            'inline_keyboard' => [
-                [['text' => "Qo'shilish", 'callback_data' => "Qo'shilish"]],
-            ]
-        ]),
-    ]);
+        $bot->makeRequest('sendMessage', [
+            'chat_id' => $cid,
+            'text' => "Videodan keyin yopiq kanal haqida reklama va takliflar yozilgan xabar jo‘natiladi. Xabar ichida obuna narxi bir oyga ekanligi haqida ma’lumot yoziladi.",
+            'reply_markup' => json_encode([
+                'inline_keyboard' => [
+                    [['text' => "Qo'shilish", 'callback_data' => "Qo'shilish"]],
+                ]
+            ]),
+        ]);
+    }
 }
-if ($txt == 'РУС 🇷🇺') {
-//    $discount = true; // Buni admindan ovollamiz
-    $bot->saveUser($cid,23);  // Discount tabledan olib kelinadi
-    $bot->makeRequest('sendVideo', [
-        'chat_id' => $cid,
-        'video' => "https://t.me/nurdavlatBlog/107",
-        'caption' => "Прибыл бесплатный 10-минутный 
-мастер-класс по русскому языку"
-    ]);
-
-    $bot->makeRequest('sendMessage', [
-        'chat_id' => $cid,
-        'text' => "После видео будет отправлено сообщение с рекламой и предложениями о закрытом канале. 
-В сообщении написана информация, что стоимость подписки указана на один месяц.",
-        'reply_markup' => json_encode([
-            'inline_keyboard' => [
-                [['text' => "Присоединение", 'callback_data' => "присоединение"]],
-            ]
-        ]),
-    ]);
-}
-
 if ($callbackText == "Qo'shilish") {
     if ($bot->getUserInfo($callbackChatId)['balance'] >= 100000){
         $bot->makeRequest('sendMessage', [
@@ -110,7 +91,42 @@ if ($callbackText == "Qo'shilish") {
     }
 
 }
+if ($txt == "Balansni tekshirish"){
+    $userSumma = $bot->getUserInfo($cid)['balance'];
+    $bot->makeRequest('sendMessage', [
+        'chat_id' => $cid,
+        'text' => "Sizning hisobingizda " . $userSumma . " so'm pul bor"
+    ]);
+}
 
+if ($txt == 'РУС 🇷🇺') {
+    $user = $bot->getUserInfo($cid);
+    if ($user) {
+        $bot->makeRequest('sendMessage', [
+            'chat_id' => $cid,
+            'text' => "Вы уже присоединились. Какой у вас вопрос?"
+        ]);
+    }else{
+        $bot->saveUser($cid,23);  // Discount tabledan olib kelinadi
+        $bot->makeRequest('sendVideo', [
+            'chat_id' => $cid,
+            'video' => "https://t.me/nurdavlatBlog/107",
+            'caption' => "Прибыл бесплатный 10-минутный 
+мастер-класс по русскому языку"
+        ]);
+
+        $bot->makeRequest('sendMessage', [
+            'chat_id' => $cid,
+            'text' => "После видео будет отправлено сообщение с рекламой и предложениями о закрытом канале. 
+В сообщении написана информация, что стоимость подписки указана на один месяц.",
+            'reply_markup' => json_encode([
+                'inline_keyboard' => [
+                    [['text' => "Присоединение", 'callback_data' => "присоединение"]],
+                ]
+            ]),
+        ]);
+    }
+}
 if ($callbackText == "присоединение") {
     if ($bot->getUserInfo($callbackChatId)['balance'] >= 100000){
         $bot->makeRequest('sendMessage', [
@@ -130,13 +146,11 @@ if ($callbackText == "присоединение") {
         ]),
     ]);
 }
-
-
-if ($txt == "Balansni tekshirish"){
-     $userSumma = $bot->getUserInfo($cid)['balance'];
+if ($txt=='Проверка баланса'){
+    $userSumma = $bot->getUserInfo($cid)['balance'];
     $bot->makeRequest('sendMessage', [
         'chat_id' => $cid,
-        'text' => "Sizning hisobingizda " . $userSumma . " so'm pul bor"
+        'text'=>"На вашем счету " . $userSumma . " сум."
     ]);
 }
 
@@ -144,8 +158,14 @@ if ($txt == "Balansni tekshirish"){
 
 
 
-
 // ADMIN PAGE
-if ($bot->getRoles((int )$cid)) {
-    require_once 'Admin/admin.php';
+if ($txt=="/admin"){
+    if ($bot->checkAdmin($cid)){
+        require_once 'Admin/admin.php';
+    }else{
+        $bot->makeRequest('sendMessage',[
+            'chat_id' => $cid,
+            'text'=>"Siz admin emasiz. Siz bunday buyruq bera olmaysiz😊."
+        ]);
+    }
 }

@@ -30,24 +30,6 @@ class Bot
     }
 
 
-    public function getRoles(int $chatId)
-    {
-        $query = "SELECT role FROM users WHERE chat_id = :chatId";
-        $db = new DB();
-        $stmt = $db->conn->prepare($query);
-        $stmt->execute([
-            ':chatId' => $chatId,
-        ]);
-
-        $row = $stmt->fetch(PDO::FETCH_ASSOC); // Assotsiativ massiv qaytaradi
-
-        if ($row['role'] == 'admin') {
-            return true; // Foydalanuvchining rolini qaytarish
-        }
-        return false; // Foydalanuvchi topilmadi
-    }
-
-
     public function getUserInfo(int $chatId)
     {
         $query = "SELECT * FROM users WHERE chat_id = :chatId";
@@ -81,6 +63,16 @@ class Bot
         return $stmt->execute([
             ':chatId' => $chatId,
             ':newDiscount' => $newDiscount,
+        ]);
+    }
+
+    public function checkAdmin($chatId)
+    {
+        $query = "SELECT * FROM admins WHERE chat_id = :chatId";
+        $db = new DB();
+        $stmt = $db->conn->prepare($query);
+        return $stmt->execute([
+            ":chatId" => $chatId,
         ]);
     }
 }
