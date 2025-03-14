@@ -3,14 +3,11 @@
 require 'DB.php';
 class Bot
 {
-
     const  API_URL = 'https://api.telegram.org/bot';
-    private string $bot_token = '7774855844:AAHJHqdgC6toUM5UxIx1DXeZ5O4yEBH3nPo';
-
     public function makeRequest($method, $data = [])
     {
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, self::API_URL . $this->bot_token . '/' . $method);
+        curl_setopt($ch, CURLOPT_URL, self::API_URL . $_ENV['BOT_TOKEN'] . '/' . $method);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         $responses = curl_exec($ch);
@@ -19,16 +16,20 @@ class Bot
     }
 
 
-    public function getUserInfo(int $chatId)
+
+    public function saveUser(int $chatId, int $discount)
     {
-        $query = "SELECT * FROM users WHERE chat_id = :chatId";
+        $query = "INSERT INTO users (chat_id, balance, finished_follow) 
+                        VALUES (:chatId, :balance, NOW())";
         $db = new DB();
         $stmt = $db->conn->prepare($query);
         $stmt->execute([
             ':chatId' => $chatId,
+            ':balance' => $discount,
         ]);
-        return $stmt->fetch();
     }
+
+
     public function getRoles(int $chatId)
     {
         $query = "SELECT role FROM users WHERE chat_id = :chatId";
@@ -47,20 +48,16 @@ class Bot
     }
 
 
-    public function saveUser(int $chatId, string $lang, int $discount)
+    public function getUserInfo(int $chatId)
     {
-        $query = "INSERT INTO users (chat_id, balance, language) 
-                        VALUES (:chatId, :balance, :language);";
+        $query = "SELECT * FROM users WHERE chat_id = :chatId";
         $db = new DB();
         $stmt = $db->conn->prepare($query);
         $stmt->execute([
             ':chatId' => $chatId,
-            ':language' => $lang,
-            ':balance' => $discount,
         ]);
+        return $stmt->fetch();
     }
-
-
 
 
 

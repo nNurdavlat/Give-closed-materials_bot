@@ -1,5 +1,11 @@
 <?php
-// ADASHIB QOLMASLIK UCHUN. BU BOT: GIVE CLOSED MATERIALS
+require 'vendor/autoload.php';
+
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 require 'Bot.php';
 
 $bot = new Bot();
@@ -15,7 +21,7 @@ $user_name = $message->chat->username;
 
 
 // INLINE KAYBOARD LARNI USHLAB OLISH
-if ($update->callback_query) {
+if (isset($update->callback_query)) {
     $callbackQuery = $update->callback_query; // Update ichida Callback query ni ushlab olib Callback queryni ishlatamiz
     $callbackText = $callbackQuery->data; // Tugma bosilgandagi so'z. Tugmani so'zi
     $callbackChatId = $callbackQuery->message->chat->id; // Foiydalanuvchini ID si callbackdagi
@@ -44,8 +50,7 @@ if ($txt == "/start") {
 }
 
 if ($txt == 'UZB 🇺🇿') {
-//    $discount = true; // Buni admindan ovollamiz
-    $bot->saveUser($cid, 'UZB', 30);  // Discount tabledan olib kelinadi
+    $bot->saveUser($cid, 30);  // Discount tabledan olib kelinadi
     $bot->makeRequest('sendVideo', [
         'chat_id' => $cid,
         'video' => "https://t.me/nurdavlatBlog/107",
@@ -64,7 +69,7 @@ if ($txt == 'UZB 🇺🇿') {
 }
 if ($txt == 'РУС 🇷🇺') {
 //    $discount = true; // Buni admindan ovollamiz
-    $bot->saveUser($cid, 'RUS', 23);  // Discount tabledan olib kelinadi
+    $bot->saveUser($cid,23);  // Discount tabledan olib kelinadi
     $bot->makeRequest('sendVideo', [
         'chat_id' => $cid,
         'video' => "https://t.me/nurdavlatBlog/107",

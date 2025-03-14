@@ -1,6 +1,6 @@
 <?php
 
-$discounts = json_encode([
+$discountsButtons= json_encode([
     'resize_keyboard' => true,
     'keyboard' => [
         [['text'=>"Chegirma narxi"],['text'=>"Chegirma summasini yangilash"]],
@@ -12,7 +12,7 @@ if ($txt == '/admin'){
     $bot->makeRequest('sendMessage', [
         'chat_id' => $cid,
         'text'=>"Assalomu aleykum. Admin panelga xush kelibsiz.",
-        'reply_markup' => $discounts,
+        'reply_markup' => $discountsButtons,
     ]);
 }
 
